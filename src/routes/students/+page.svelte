@@ -4,12 +4,50 @@
     import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
 	import { fade } from 'svelte/transition';
+    import * as mqtt from 'mqtt/dist/mqtt.min';
+    import { onMount } from 'svelte';
     export let data: PageData;
     let students = data.students;
     let modal_open = false;
     let new_student_name = "";
     let new_student_id = "";
     let new_student_rfid = "";
+
+    const mqtt_url = 'ws://broker.emqx.io:8083/mqtt'
+    let client: mqtt.MqttClient;
+    let logging: boolean = false;
+    onMount(() => {
+        client = mqtt.connect(mqtt_url)
+        client.on('connect', () => {
+        console.log('connected')
+    })
+    client.on('message', (topic, message) => {
+        if (!logging) return;
+        console.log('message received', topic, message.toString())
+        const msg = JSON.parse(message.toString());
+        console.log(msg)
+        new_student_rfid = msg.msg;
+    })
+       
+    client.on('end', () => {
+        console.log('disconnected')
+    })
+    })
+
+    let reader_id = 'orange';
+    let subscribed = false;
+    const startLogging = () => {
+        logging = true;
+        client.subscribe('MKOSJVMJGJ/'+reader_id);
+        subscribed = true;
+    } 
+    const stopLogging = () => {
+        logging = false;
+        client.unsubscribe('MKOSJVMJGJ/'+reader_id);
+        subscribed = false;
+    } 
+
+  
     const createNewStudent = async() => {
         console.log("Create new student");
         try{
@@ -78,6 +116,13 @@
     <div class="fixed z-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/2 bg-slate-900 rounded-lg shadow-lg">
         <div class="flex flex-col items-center justify-center p-4">
             <div class="text-2xl font-bold text-slate-300">Add New Student</div>
+            <div class="flex flex-row text-white items-center justify-center gap-4 mt-4">
+                <label class="font-bold">
+                    Reader Id
+                    <input type="text" class="bg-slate-600 p-1 ml-4 font-normal rounded-lg" bind:value={reader_id} disabled={subscribed} /> 
+                </label>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded" on:click={subscribed?  stopLogging : startLogging }>{subscribed? "Stop Logging" : "Start Logging"}</button>
+            </div>
             <div class="flex flex-col w-full mt-2 gap-2">
                 <label class="text-slate-300 mx-2" for="student-id-input">ID</label>
                 <input id="student-id-input" bind:value={new_student_id} class="bg-slate-800 text-slate-300 rounded-lg p-2" type="text" />
