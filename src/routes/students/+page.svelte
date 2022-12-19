@@ -3,6 +3,7 @@
     import pb from '$lib/pb';
     import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
+	import { fade } from 'svelte/transition';
     export let data: PageData;
     let students = data.students;
     let modal_open = false;
@@ -64,7 +65,8 @@
 <!-- 
     Modal for adding a new student
  -->
- <div hidden={!modal_open} class="min-h-screen w-full fixed z-20 top-0" >
+ {#if modal_open}
+ <div  class="min-h-screen w-full fixed z-20 top-0" transition:fade >
     <div  on:click={closeModal} 
     on:keydown={(e) => { e.stopPropagation()
         if (e.key === 'Escape') {
@@ -96,3 +98,5 @@
         </div>
     </div>
 </div>
+
+{/if}

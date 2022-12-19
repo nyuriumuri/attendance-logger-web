@@ -5,6 +5,8 @@
 	import { goto } from '$app/navigation';
     import StudentList from './StudentList.svelte';
 	import type { Student } from '$lib/types';
+    import { fade } from 'svelte/transition';
+    import dayjs from 'dayjs';
     export let data: PageData;
     const createNewLog = async() => {
         console.log("Create new log");
@@ -55,7 +57,7 @@
         <div class="text-sm italic font-light">Students</div>
         {#each data.attendance as attendance}
                 <a href={`/attendance/${attendance.id}`}>   
-                     <div class="text-l">{attendance.date}
+                     <div class="text-l">{dayjs(attendance.date).format('dddd M/D/YYYY h:mm A')}
                     </div>
                 </a>
                 <div class="text-sm italic font-light">{attendance.num_attended}</div>
@@ -68,7 +70,8 @@
     
 </div>
 
-<div hidden={!modal_open} class="min-h-screen w-full fixed z-20 top-0" >
+{#if modal_open}
+<div class="min-h-screen w-full fixed z-20 top-0" transition:fade >
     <div  on:click={closeModal} 
     on:keydown={(e) => { e.stopPropagation()
         if (e.key === 'Escape') {
@@ -92,3 +95,4 @@
         </div>
     </div>
 </div>
+{/if}

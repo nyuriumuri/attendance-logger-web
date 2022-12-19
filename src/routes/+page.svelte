@@ -4,6 +4,7 @@
     import CourseCard from './CourseCard.svelte';
     import pb from '$lib/pb';
     import { goto } from '$app/navigation';
+	import { fade } from 'svelte/transition';
     // variables to hold modal form data
     let course_code: string;
     let course_name: string;
@@ -63,8 +64,9 @@
 -->
             
 
-  
-<div hidden={!modal_open} class="min-h-screen w-full fixed z-20 top-0" >
+
+{#if modal_open}
+<div class="min-h-screen w-full fixed z-20 top-0" transition:fade >
     <div  on:click={closeModal} 
     on:keydown={(e) => { e.stopPropagation()
         if (e.key === 'Escape') {
@@ -91,3 +93,4 @@
         </div>
     </div>
 </div>
+{/if}

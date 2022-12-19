@@ -35,6 +35,7 @@ try{
 
     return {
         course: course,
+        date: attendanceRecord.date,
         id: attendanceRecord.id,
         students: students,
     };
