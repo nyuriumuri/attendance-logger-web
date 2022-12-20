@@ -30,6 +30,12 @@
     const addStudent = async() => {
         console.log("Add student");
         try{
+            // return if student already exists
+            if(students.find(s => s.student_id == new_student_id)) {
+                // send window alert
+                alert("Student already exists");
+                return
+            };
             const student_record = await pb.collection('student').getFirstListItem(`student_id=${new_student_id}`);
             // const record = await pb.collection("course").get(data.course_id);
             await pb.collection("student").update(student_record.id, {
@@ -43,6 +49,7 @@
             students = [...students, student];
             closeModal();
         }catch (e){
+            alert("Invalid Student ID");
             console.log("Error adding student");
             console.log(e);
         }
@@ -86,18 +93,18 @@
     } 
     class="w-full min-h-screen bg-slate-600 opacity-50 z-[19]"></div>
     <div class="fixed z-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/2 bg-slate-900 rounded-lg shadow-lg">
-        <div class="flex flex-col items-center justify-center p-4">
+        <form  on:submit|preventDefault class="flex flex-col items-center justify-center p-4">
             <div class="text-2xl font-bold text-slate-300">Add New Student</div>
             <div class="flex flex-col w-full mt-2 mb-4 gap-2">
                 <label class="text-slate-300 mx-2" for="course-code-input">Student ID</label>
-                <input id="course-code-input" bind:value={new_student_id} class="bg-slate-800 text-slate-300 rounded-lg p-2" type="text" />
+                <input autofocus id="course-code-input" bind:value={new_student_id} class="bg-slate-800 text-slate-300 rounded-lg p-2" type="text" />
             
             </div>
 
             <div class="flex flex-row w-full justify-end">
-                <button on:click={addStudent} class="bg-blue-900 hover:bg-blue-500 text-slate-300 rounded-lg p-2">Add Student</button>
+                <button type="submit" on:click={addStudent} class="bg-blue-900 hover:bg-blue-500 text-slate-300 rounded-lg p-2">Add Student</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 {/if}

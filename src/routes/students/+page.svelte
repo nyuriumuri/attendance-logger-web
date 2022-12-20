@@ -51,6 +51,11 @@
     const createNewStudent = async() => {
         console.log("Create new student");
         try{
+            // send an alert and return if any of the fields are empty
+            if (new_student_name == "" || new_student_id == "" || new_student_rfid == ""){
+                alert("Please fill out all fields");
+                return;
+            }
             const record = await pb.collection("student").create({
                 name: new_student_name,
                 student_id: new_student_id,
@@ -114,7 +119,7 @@
     } 
     class="w-full min-h-screen bg-slate-600 opacity-50 z-[19]"></div>
     <div class="fixed z-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/2 bg-slate-900 rounded-lg shadow-lg">
-        <div class="flex flex-col items-center justify-center p-4">
+        <form on:submit|preventDefault class="flex flex-col items-center justify-center p-4">
             <div class="text-2xl font-bold text-slate-300">Add New Student</div>
             <div class="flex flex-row text-white items-center justify-center gap-4 mt-4">
                 <label class="font-bold">
@@ -125,7 +130,7 @@
             </div>
             <div class="flex flex-col w-full mt-2 gap-2">
                 <label class="text-slate-300 mx-2" for="student-id-input">ID</label>
-                <input id="student-id-input" bind:value={new_student_id} class="bg-slate-800 text-slate-300 rounded-lg p-2" type="text" />
+                <input autofocus id="student-id-input" bind:value={new_student_id} class="bg-slate-800 text-slate-300 rounded-lg p-2" type="text" />
             
             </div>
             <div class="flex flex-col w-full mt-2 gap-2">
@@ -138,9 +143,9 @@
                     <input id="student-name-input" bind:value={new_student_name} class="bg-slate-800 text-slate-300 rounded-lg p-2" type="text" />
             </div>
             <div class="flex flex-row w-full justify-end">
-                <button on:click={createNewStudent} class="bg-blue-900 hover:bg-blue-500 text-slate-300 rounded-lg p-2">Add Student</button>
+                <button type="submit" on:click={createNewStudent} class="bg-blue-900 hover:bg-blue-500 text-slate-300 rounded-lg p-2">Add Student</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 

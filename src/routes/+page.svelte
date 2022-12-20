@@ -12,6 +12,11 @@
     let modal_open: boolean = false;
     // function to add new course
     const addCourse = async () => {
+        // send an alert and return if any of the fields are empty
+        if (course_code == "" || course_name == ""){
+            alert("Please fill out all fields");
+            return;
+        }
         // create new course object
         const new_course = {
             code: course_code,
@@ -24,9 +29,12 @@
             const new_course_id = res.id;
             // go to new course page
             await goto(`/course/${new_course_id}`);
-        }).catch(err => console.log(err));
+        }).catch(err => { 
+            console.log(err) 
+            alert("Error creating course");
+        });
         // close modal
-        modal_open = false;
+        // modal_open = false;
     }
 
     const closeModal = () =>{
@@ -76,11 +84,11 @@
     } 
     class="w-full min-h-screen bg-slate-600 opacity-50 z-[19]"></div>
     <div class="fixed z-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/2 bg-slate-900 rounded-lg shadow-lg">
-        <div class="flex flex-col items-center justify-center p-4">
+        <form on:submit|preventDefault class="flex flex-col items-center justify-center p-4">
             <div class="text-2xl font-bold text-slate-300">Add New Course</div>
             <div class="flex flex-col w-full mt-2 gap-2">
                 <label class="text-slate-300 mx-2" for="course-code-input">Course Code</label>
-                <input id="course-code-input" bind:value={course_code} class="bg-slate-800 text-slate-300 rounded-lg p-2" type="text" />
+                <input autofocus id="course-code-input" bind:value={course_code} class="bg-slate-800 text-slate-300 rounded-lg p-2" type="text" />
             
             </div>
             <div class="flex flex-col w-full my-4 gap-2">
@@ -88,9 +96,9 @@
                     <input id="course-name-input" bind:value={course_name} class="bg-slate-800 text-slate-300 rounded-lg p-2" type="text" />
             </div>
             <div class="flex flex-row w-full justify-end">
-                <button on:click={addCourse} class="bg-blue-900 hover:bg-blue-500 text-slate-300 rounded-lg p-2">Add Course</button>
+                <button type="submit" on:click={addCourse} class="bg-blue-900 hover:bg-blue-500 text-slate-300 rounded-lg p-2">Add Course</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 {/if}
