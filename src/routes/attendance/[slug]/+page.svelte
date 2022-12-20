@@ -8,7 +8,6 @@
     import dayjs from 'dayjs';
     export let data: PageData;
     let students = data.students as Student[];
-   
     const mqtt_url = 'ws://broker.emqx.io:8083/mqtt'
     let client: mqtt.MqttClient;
 
@@ -65,19 +64,21 @@
     
 </script>
 
-<h1 class="text-xl text-white">{data.course?.name}</h1>
-<h2 class="text-xl text-slate-200 italic">{date}</h2>
-<div class="flex flex-row text-white">
-    <label>
-        Reader Id
-        <input type="text" class="bg-slate-600" bind:value={reader_id} disabled={subscribed} /> 
-    </label>
-    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" on:click={subscribed?  stopLogging : startLogging }>{subscribed? "Stop Logging" : "Start Logging"}</button>
+<div class="flex flex-row justify-center gap-10">
+    <a href={`/course/${data.course?.id}`}>
+        <h1 class="text-xl text-white hover:text-blue-400">{data.course?.name}</h1>
+    </a>
+    <h2 class="text-xl text-slate-200 italic">{date}</h2>
 </div>
-<div class="flex w-full items-center justify-center">
-    <div class="grid w-1/2 grid-cols-4 grid-flow-col">
+<div class="flex flex-row text-white items-center justify-center gap-4 mt-4">
+    <label class="font-bold">
+        Reader Id
+        <input type="text" class="bg-slate-600 p-1 ml-4 font-normal rounded-lg" bind:value={reader_id} disabled={subscribed} /> 
+    </label>
+    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded" on:click={subscribed?  stopLogging : startLogging }>{subscribed? "Stop Logging" : "Start Logging"}</button>
+</div>
+<div class="flex w-full items-center justify-center gap-4 my-4">
         {#each students as student}
                 <StudentDisplay student={student} />
         {/each}
-    </div>
 </div>

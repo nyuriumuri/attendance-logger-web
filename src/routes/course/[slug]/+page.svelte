@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { each } from 'svelte/internal';
+    import DownloadExcel from './DownloadExcel.svelte';
     import pb from '$lib/pb';
     import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
@@ -17,7 +18,7 @@
         await goto(`/attendance/${record.id}`);
     }
 
-    const buttonClass ="bg-blue-900 hover:bg-blue-500 text-slate-300 rounded-lg p-2"
+    const buttonClass ="bg-blue-900 hover:bg-blue-500 text-slate-200 rounded-lg p-2"
     let modal_open = false;
     let new_student_id = "";
     const closeModal = () => {
@@ -52,21 +53,25 @@
 <div class="flex flex-row min-h-full text-white">
 
     <StudentList students={students} />
-    <div class="grid grid-cols-2 mx-auto mt-12 gap-5">
-        <div class="text-l">Date</div>
-        <div class="text-sm italic font-light">Students</div>
-        {#each data.attendance as attendance}
-                <a href={`/attendance/${attendance.id}`}>   
-                     <div class="text-l">{dayjs(attendance.date).format('dddd M/D/YYYY h:mm A')}
-                    </div>
-                </a>
-                <div class="text-sm italic font-light">{attendance.num_attended}</div>
-        {/each}
+    <div class="flex flex-col w-3/4 justify-center">
+        <div class="flex flex-row gap-4 mx-auto">
+            <button on:click={createNewLog} class={buttonClass}>Start New Class</button>
+            <button on:click={()=>modal_open=true} class={buttonClass}>Enroll New Student</button>
+            <DownloadExcel classId={data.course_id}  />
+        </div>
+        <div class="grid grid-cols-2 mx-auto mt-12 gap-5">
+            <div class="text-l">Date</div>
+            <div class="text-sm italic font-light">Num Attended</div>
+            {#each data.attendance as attendance}
+                    <a href={`/attendance/${attendance.id}`}>
+                         <div class="text-l hover:text-blue-400">{dayjs(attendance.date).format('dddd M/D/YYYY h:mm A')}
+                        </div>
+                    </a>
+                    <div class="text-sm italic font-light">{attendance.num_attended}</div>
+            {/each}
+        </div>
     </div>
-    <div class="flex flex-col gap-4 mx-4">
-        <button on:click={createNewLog} class={buttonClass}>Start New Class</button>
-        <button on:click={()=>modal_open=true} class={buttonClass}>Enroll New Student</button>
-    </div>
+  
     
 </div>
 
